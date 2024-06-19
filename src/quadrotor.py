@@ -50,7 +50,11 @@ class Quadrotor3D:
         self.min_input_value = 0  # Motors turned off
 
         # Quadrotor intrinsic parameters
-        self.J = np.array([.03, .03, .06])  # N m s^2 = kg m^2
+        # self.J = np.array([.03, .03, .06])  # N m s^2 = kg m^2
+        Ixx = uav_parameters['inertia']['xx']
+        Iyy = uav_parameters['inertia']['yy']
+        Izz = uav_parameters['inertia']['zz']
+        self.J = np.array([Ixx, Iyy, Izz])
         # self.mass = 1.0  # kg
         self.mass = uav_parameters['uav_mass']
 
