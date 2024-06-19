@@ -1,0 +1,4 @@
+[submodule "uav_parameters"]
+	path = uav_parameters
+	url = https://github.com/riccardo-enr/uav_parameters.git
+	branch = main
