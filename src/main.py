@@ -15,12 +15,13 @@ def createTrajectory(sim_time, dt):
     zref = []
     radius = 1.0
     height = -2.0  # Modified to make z negative
+    offset_height = -1.0  # Offset height
     num_turns = 2
     for i in range(int(sim_time / dt)):
         t = dt * i
         x = radius * math.cos(2 * math.pi * num_turns * t / sim_time)
         y = radius * math.sin(2 * math.pi * num_turns * t / sim_time)
-        z = height * t / sim_time
+        z = height * t / sim_time + offset_height  # Add offset height
         xref.append(x)
         yref.append(y)
         zref.append(z)
@@ -81,7 +82,7 @@ def trackTrajectory():
             y = np.concatenate((y,np.ones(N+1-len(y))*yref[-1]),axis=None)
             z = np.concatenate((z,np.ones(N+1-len(z))*zref[-1]),axis=None)
         goal=np.array([x,y,z]).T
-        # print(goal)
+        print(goal)
 
         current = np.concatenate([quad.pos, quad.angle, quad.vel, quad.a_rate])
         start = timeit.default_timer()
@@ -91,8 +92,7 @@ def trackTrajectory():
         path.append(quad.pos)
         q_path.append(quad.angle)
         u_path.append(thrust)
-        
-
+    
     # CPU time
     print("average estimation time is {:.5f}".format(np.array(time_record).mean()))
     print("max estimation time is {:.5f}".format(np.array(time_record).max()))

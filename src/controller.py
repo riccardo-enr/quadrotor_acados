@@ -264,8 +264,9 @@ class Controller:
                 self.acados_ocp_solver[use_model].set(j, 'yref', y_ref)
             y_refN = np.array([goal[0], goal[1], goal[2], 1,0,0,0, 0,0,0, 0,0,0])
             self.acados_ocp_solver[use_model].set(self.N, 'yref', y_refN)
-        else:
+        else: # for 'traj' mode
             for j in range(self.N):
+                # repeat the current reference for the horizon
                 y_ref = np.array([goal[j,0], goal[j,1], goal[j,2], 1,0,0,0, 0,0,0, 0,0,0, 0,0,0,0])
                 self.acados_ocp_solver[use_model].set(j, 'yref', y_ref)
             y_refN = np.array([goal[self.N,0], goal[self.N,1], goal[self.N,2], 1,0,0,0, 0,0,0, 0,0,0])
