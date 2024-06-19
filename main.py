@@ -43,7 +43,7 @@ def move2Goal():
     ax.plot(path[:,0], path[:,1], path[:,2])
     # ax.plot(xref, yref, zref)
     ax.scatter(goal[0], goal[1], goal[2], c=[1,0,0], label='goal')
-    ax.axis('equal')
+    ax.axis('auto')
     ax.set_xlabel('x [m]')
     ax.set_ylabel('y [m]')
     ax.set_zlabel('z [m]')
@@ -51,13 +51,13 @@ def move2Goal():
     plt.show()
 
 def trackTrajectory():
-    dt = 0.1    # Time step
+    dt = 0.01    # Time step
     N = 10      # Horizontal length
     
     quad = Quadrotor3D()    # Quadrotor model
-    controller = Controller(quad, t_horizon=2*N*dt, n_nodes=N)  # Initialize MPC controller
+    controller = Controller(quad, t_horizon=2*N*dt*10, n_nodes=N)  # Initialize MPC controller
 
-    sim_time = 10
+    sim_time = 50
     xref, yref, zref = createTrajectory(sim_time, dt)
     path = []
 
@@ -92,7 +92,7 @@ def trackTrajectory():
     ax = plt.axes(projection='3d')
     ax.plot(xref, yref, zref, c=[1,0,0], label='goal')
     ax.plot(path[:,0], path[:,1], path[:,2])
-    ax.axis('equal')
+    ax.axis('auto')
     ax.set_xlabel('x [m]')
     ax.set_ylabel('y [m]')
     ax.set_zlabel('z [m]')
