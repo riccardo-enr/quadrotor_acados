@@ -5,7 +5,6 @@ from acados_template import AcadosOcp, AcadosOcpSolver, AcadosModel
 from quadrotor import Quadrotor3D
 from utils import skew_symmetric, v_dot_q, quaternion_inverse
 
-
 class Controller:
     def __init__(self, quad:Quadrotor3D, t_horizon=1, n_nodes=20,
                  q_cost=None, r_cost=None, q_mask=None, rdrv_d_mat=None,
