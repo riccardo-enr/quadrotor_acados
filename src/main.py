@@ -10,11 +10,17 @@ from controller import Controller
 from utils import quaternion_to_euler
 
 def createTrajectory(sim_time, dt):
-    xref = []; yref = []; zref = []
-    for i in range(int(sim_time/dt)):
-        x = 1.0
-        y = 0.5*dt*i
-        z = 1.0
+    xref = []
+    yref = []
+    zref = []
+    radius = 1.0
+    height = -2.0  # Modified to make z negative
+    num_turns = 2
+    for i in range(int(sim_time / dt)):
+        t = dt * i
+        x = radius * math.cos(2 * math.pi * num_turns * t / sim_time)
+        y = radius * math.sin(2 * math.pi * num_turns * t / sim_time)
+        z = height * t / sim_time
         xref.append(x)
         yref.append(y)
         zref.append(z)
@@ -96,13 +102,14 @@ def trackTrajectory():
     path = np.array(path)
     # print(path)
     plt.figure()
+    plt.title('UAV Position in ENU frame')
     ax = plt.axes(projection='3d')
-    ax.plot(xref, yref, zref, c=[1,0,0], label='goal')
-    ax.plot(path[:,0], path[:,1], path[:,2])
+    ax.plot(yref, xref, -zref, c=[1,0,0], label='goal')
+    ax.plot(path[:,1], path[:,0], -path[:,2])  # Swap x and y, negate z
     ax.axis('auto')
-    ax.set_xlabel('x [m]')
-    ax.set_ylabel('y [m]')
-    ax.set_zlabel('z [m]')
+    ax.set_xlabel('y [m]')  # Swap x and y labels
+    ax.set_ylabel('x [m]')
+    ax.set_zlabel('-z [m]')  # Negate z label
     ax.legend()
 
     # Plot UAV attitude axes
@@ -116,9 +123,9 @@ def trackTrajectory():
         x_axis = R @ np.array([1, 0, 0])
         y_axis = R @ np.array([0, 1, 0])
         z_axis = R @ np.array([0, 0, 1])
-        ax.quiver(origin[0], origin[1], origin[2], x_axis[0], x_axis[1], x_axis[2], color='r', length=0.05)
-        ax.quiver(origin[0], origin[1], origin[2], y_axis[0], y_axis[1], y_axis[2], color='g', length=0.05)
-        ax.quiver(origin[0], origin[1], origin[2], z_axis[0], z_axis[1], z_axis[2], color='b', length=0.05)
+        ax.quiver(origin[1], origin[0], -origin[2], y_axis[1], y_axis[0], -y_axis[2], color='r', length=0.05)  # Swap x and y, negate z
+        ax.quiver(origin[1], origin[0], -origin[2], x_axis[1], x_axis[0], -x_axis[2], color='g', length=0.05)  # Swap x and y, negate z
+        ax.quiver(origin[1], origin[0], -origin[2], -z_axis[1], -z_axis[0], z_axis[2], color='b', length=0.05)  # Swap x and y, negate z
 
     plt.figure()
     plt.plot(time_record)

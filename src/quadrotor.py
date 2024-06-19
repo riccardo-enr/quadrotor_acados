@@ -37,7 +37,8 @@ class Quadrotor3D:
         # self.max_thrust = 20
         self.thrust_constant = uav_parameters['thrust_constant']
         self.max_rotor_speed = uav_parameters['max_rotor_speed']
-        self.max_thrust = self.thrust_constant * self.max_rotor_speed**2 * 4
+        self.max_thrust = self.thrust_constant * self.max_rotor_speed**2 # single rotor max thrust
+        self.max_thrust = - self.max_thrust # max thrust in NED frame
 
         # System state space
         self.pos = np.zeros((3,))
@@ -77,7 +78,7 @@ class Quadrotor3D:
         self.z_l_tau = np.array([-self.c, self.c, -self.c, self.c])
 
         # Gravity vector
-        self.g = np.array([[0], [0], [9.81]])  # m s^-2
+        self.g = np.array([[0], [0], [- 9.81]])  # m s^-2
 
         # Actuation thrusts
         self.u_noiseless = np.array([0.0, 0.0, 0.0, 0.0])
@@ -209,7 +210,7 @@ class Quadrotor3D:
         :return: 3D velocity differential increment (vector): d[vel_x; vel_y; vel_z]/dt
         """
 
-        a_thrust = np.array([[0], [0], [np.sum(u)]]) / self.mass
+        a_thrust = np.array([[0], [0], [- np.sum(u)]]) / self.mass  # Change direction of thrust
 
         if self.drag:
             # Transform velocity to body frame
@@ -225,9 +226,9 @@ class Quadrotor3D:
 
         angle_quaternion = x[1]
 
-        a_payload = -self.payload_mass * self.g / self.mass
+        a_payload = self.payload_mass * self.g / self.mass  # Change direction of payload force
 
-        return np.squeeze(-self.g + a_payload + a_drag + v_dot_q(a_thrust + f_d / self.mass, angle_quaternion))
+        return np.squeeze(self.g + a_payload + a_drag + v_dot_q(a_thrust + f_d / self.mass, angle_quaternion))
 
     def f_rate(self, x, u, t_d):
         """

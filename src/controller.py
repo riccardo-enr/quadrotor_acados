@@ -209,10 +209,10 @@ class Controller:
         """
 
         f_thrust = self.u * self.quad.max_thrust
-        g = cs.vertcat(0.0, 0.0, 9.81)
-        a_thrust = cs.vertcat(0.0, 0.0, f_thrust[0] + f_thrust[1] + f_thrust[2] + f_thrust[3]) / self.quad.mass
+        g = cs.vertcat(0.0, 0.0, -9.81)
+        a_thrust = cs.vertcat(0.0, 0.0, - (f_thrust[0] + f_thrust[1] + f_thrust[2] + f_thrust[3])) / self.quad.mass
 
-        v_dynamics = v_dot_q(a_thrust, self.q) - g
+        v_dynamics = v_dot_q(a_thrust, self.q) + g
 
         if rdrv_d is not None:
             # Velocity in body frame:
